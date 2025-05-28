@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class IEnemyInterface;
 /**
  * 
  */
@@ -18,6 +19,8 @@ class AURA_API AAuraPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AAuraPlayerController();
+	//在玩家tick中执行追踪，并对碰到的实现了敌人接口的角色进行高亮处理
+	virtual void Tick(float DeltaTime) override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -30,4 +33,11 @@ private:
 	TObjectPtr<UInputAction> MoveAction;
 
 	void Move(const FInputActionValue& InputActionValue);
+	
+	//设置每帧追踪光标的函数
+	void CursorTrace();
+	
+	//定义2个Enemy接口指针，一个指向上一帧，一个指向现在的帧
+	IEnemyInterface* LastActor;
+	IEnemyInterface* ThisActor;
 };

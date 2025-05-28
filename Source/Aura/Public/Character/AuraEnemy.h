@@ -18,5 +18,7 @@ public:
 	//从敌人接口抽象类中重写的纯虚函数
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	bool bHighlighted = false;
 };

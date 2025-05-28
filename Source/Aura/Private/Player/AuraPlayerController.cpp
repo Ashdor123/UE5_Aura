@@ -4,10 +4,84 @@
 #include "Player/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
+
 AAuraPlayerController::AAuraPlayerController()
 {
 	//Replication 复制就是响应服务器上的数据更新，并将这些更新发送给客户端
 	bReplicates = true;
+}
+
+void AAuraPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	//Cursor 光标
+	CursorTrace();
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	//1.在光标下获取命中结果
+	FHitResult CursorHit;
+	//2.获取碰撞结果，就是光标的命中点
+	//PS：这里要给敌人的碰撞预设中的可见性设为阻挡
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility,false,CursorHit);
+	//3.判断是否命中,
+	if (!CursorHit.bBlockingHit) return;
+	//4.如果转换成功，那么被命中的Actor就实现了IEnemy接口
+	// Ps:当Actor没有实先IEnemy接口，转换会返回一个空指针， 我们可以利用这个信息,所以我们可以定义2个指针，一个指向上一帧的，一个是现在的这一帧的，来判断它们是否是相同的对象
+	LastActor= ThisActor;
+	//5.如果转换可能失败，这意味着ThisActor会变成空指针，而LastActor会保存更新前的ThisActor值
+	//换句话说，LastActor会保留上一帧的情况
+	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+
+	/* 伪代码分析鼠标悬停的 5 种情况
+	Line trace from cursor. There are several scenarios:
+	A. LastActor is null && ThisActor is null
+		-Do nothing
+	B. LastActor is null && ThisActor is valid
+		-Highlight ThisActor
+	C. LastActor is valid && ThisActor is null
+		-UnHighlight LastActor
+	D. Both actors are valid, but LastActor != ThisActor
+		-UnHighlight LastActor, and Highlight ThisActor
+	E. Both actors are valid, and are the same actor
+		－Do nothing
+	*/
+	if (LastActor ==nullptr)
+	{
+		if (ThisActor != nullptr)
+		{
+			//Case B
+			ThisActor->HighlightActor();
+		}
+		else
+		{
+			//Case A -both are null,do nothing 
+		}
+	}
+	else //Last Actor is Valid
+	{
+		if (ThisActor == nullptr)
+		{
+			//Case C
+			LastActor->UnHighlightActor();
+		} //bath actor are valid
+		else
+		{
+			if (LastActor != ThisActor)
+			{
+				//Case D
+				LastActor->UnHighlightActor();
+				ThisActor->HighlightActor();
+			}
+			else
+			{
+				//Case E -do nothing
+			}
+		}
+	}
+	
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -70,3 +144,7 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 		
 }
+
+
+
+

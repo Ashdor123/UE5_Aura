@@ -13,7 +13,9 @@ AAuraPlayerState::AAuraPlayerState()
 	//设置能力系统组件可以复制
 	//当设置为 true 时，该组件会在网络游戏中被复制到所有客户端
 	AbilitySystemComponent->SetIsReplicated(true);
-
+	//角色设置的游戏效果传输模式为混合
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	
 	//网络更新频率 = 这是服务器尝试更新客服端的频率

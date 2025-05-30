@@ -3,6 +3,8 @@
 
 #include "Character/AuraCharacter.h"
 
+#include "AbilitySystemComponent.h"
+#include "Player/AuraPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AAuraCharacter::AAuraCharacter()
@@ -29,3 +31,30 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationRoll = false;
 	/*----------------------------------------------------------------------------------------*/
 }
+
+void AAuraCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	//Init ability actor info for the Server
+	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+	//为客服端初始化角色能力信息
+	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::InitAbilityActorInfo()
+{
+	AAuraPlayerState* AuraPlayerState =  GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState,this);
+	
+	//初始化角色的能力系统指针与属性集
+	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+	AttributeSet = AuraPlayerState->GetAttributeSet();
+}
+
+

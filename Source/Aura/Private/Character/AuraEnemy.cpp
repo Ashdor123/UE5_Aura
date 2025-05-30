@@ -16,7 +16,9 @@ AAuraEnemy::AAuraEnemy()
 	//设置能力系统组件可以复制
 	//当设置为 true 时，该组件会在网络游戏中被复制到所有客户端
 	AbilitySystemComponent->SetIsReplicated(true);
-
+	//AI设置的游戏效果传输模式为最小 SetReplicationMode设置复制模式
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	
 }
@@ -39,4 +41,10 @@ void AAuraEnemy::UnHighlightActor()
 	GetMesh()->SetRenderCustomDepth(false);
 	//关闭敌人的武器轮廓显示
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 }

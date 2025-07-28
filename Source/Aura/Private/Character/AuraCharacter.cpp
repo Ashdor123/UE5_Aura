@@ -23,6 +23,7 @@ AAuraCharacter::AAuraCharacter()
 	
 	//1.当设置为 true 时，角色在游戏开始时（或生成时）会立即将其位置对齐到最近的约束平面上
 	//2.此属性必须配合 bConstrainToPlane = true 使用才有效
+	//
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 	
 	//俯视角游戏不应该启用控制器的旋转 X,Y,Z
@@ -30,6 +31,7 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 	/*----------------------------------------------------------------------------------------*/
+
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)

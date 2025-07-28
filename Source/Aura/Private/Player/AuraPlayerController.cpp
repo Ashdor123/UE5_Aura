@@ -126,13 +126,13 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	const FRotator Rotation = GetControlRotation();
 	//除了Y轴，其它轴长度为0  获取角色偏航旋转（通常忽略俯仰和翻滚）
 	const FRotator YawRotation(0.f,Rotation.Yaw,0.f);
-
+	
 	//获取前向向量的旋转,X轴将为我们的前方
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	//获取向右的向量,右轴向量
 	//GetUnitAxis返回的是单位向量，也就是归一了
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
+	
 	//有了方向后，就可以为棋子添加移动输入了
 	if (APawn* ControlledPawn = GetPawn<APawn>())
 	{
@@ -142,7 +142,7 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
 		
 	}
-		
+
 }
 
 

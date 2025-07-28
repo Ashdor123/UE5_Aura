@@ -7,6 +7,7 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
+	//用宏初始化属性值
 	InitHealth(100.f);
 	InitMaxHealth(100.f);
 	InitMana(50.f);

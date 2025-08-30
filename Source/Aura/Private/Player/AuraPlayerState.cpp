@@ -8,6 +8,7 @@
 
 AAuraPlayerState::AAuraPlayerState()
 {
+	//1.设置能力系统组件
 	//使用 UAuraAbilitySystemComponent 而非引擎默认的 UAbilitySystemComponent 允许：1.添加项目特定的技能逻辑 2.实现自定义的伤害计算 3.创建特殊的效果交互系统
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
 	//设置能力系统组件可以复制
@@ -15,10 +16,11 @@ AAuraPlayerState::AAuraPlayerState()
 	AbilitySystemComponent->SetIsReplicated(true);
 	//角色设置的游戏效果传输模式为混合
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-	
+
+	//2.设置属性集
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	
-	//网络更新频率 = 这是服务器尝试更新客服端的频率
+	//3.网络更新频率 = 这是服务器尝试更新客服端的频率
 	NetUpdateFrequency = 100.f;
 }
 

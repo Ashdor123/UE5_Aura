@@ -4,8 +4,11 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Player/AuraPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerController.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -51,12 +54,34 @@ void AAuraCharacter::OnRep_Controller()
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPlayerState =  GetPlayerState<AAuraPlayerState>();
-	check(AuraPlayerState);
-	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState,this);
+	if (AuraPlayerState)
+	{
+		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState,this);
+		//设置能力角色信息
+		Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
+		//初始化角色的能力系统指针与属性集
+		AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+		AttributeSet = AuraPlayerState->GetAttributeSet();
+	}
 	
-	//初始化角色的能力系统指针与属性集
-	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
-	AttributeSet = AuraPlayerState->GetAttributeSet();
+	/*在什么时候检查空指针，用check，了解玩家控制器是不是在每台机器、每个玩家上都存在这点很重要，
+	 *在多人游戏当中，只有在服务器端，所有玩家的玩家控制器才是有效的，
+	 *报务器拥有所有玩家的玩家控制器但每个玩家只拥有自己的那个玩家控制器，所以在客户端这台机器上，控制自已角色的那个玩家控制器才是有效的；
+
+	举个例子：比如说，在一个三人游戏中，如果你是客户端玩家，你自己的玩家控制器就是有效，但在你的电脑上，另外两个角色，那两个副本，是没有有效玩家控制器的，在InitAbilityActorInfo（）这个函数调用时，AuraPlayerController就是空指针
+	所以在这种情况下，控制器是会出现空指针的情况，故需要检查后往下执行
+	*/
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
+		//我们需要用if语句来判断它是否有效，因为只有本地玩家的HUD才是有效的
+		if (AuraHUD)
+		{
+			AuraHUD->InitOverlay(AuraPlayerController,AuraPlayerState,AbilitySystemComponent,AttributeSet);
+			
+		}
+	}
+
 }
 
 

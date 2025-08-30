@@ -92,9 +92,14 @@ void AAuraPlayerController::BeginPlay()
 	//1.类型为增强输入本地玩家子系统的本地指针子系统,这就是我们添加映射上下文的方法，让玩家控制器能够获取数据
 	//2.GetLocalPlayer() 获取当前本地玩家对象  GetSubsystem<...>() 模板函数获取指定的子系统实例
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	//参数0表示优先级（数字越大优先级越高）
-	Subsystem->AddMappingContext(AuraContext,0);
+	//只有在本地控制的机器并且有有效的localplayer时，subsystem才会有效
+	if (Subsystem)
+	{
+		check(Subsystem);
+		//参数0表示优先级（数字越大优先级越高）
+		Subsystem->AddMappingContext(AuraContext,0);
+	}
+
 	
 	//显示鼠标的光标
 	bShowMouseCursor = true;

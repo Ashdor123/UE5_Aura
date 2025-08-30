@@ -20,5 +20,5 @@ public:
 	virtual void OnRep_Controller() override;
 private:
 	//初始化角色能力信息的函数
-	void InitAbilityActorInfo();
+	virtual void InitAbilityActorInfo() override;
 };

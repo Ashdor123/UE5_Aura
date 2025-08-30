@@ -17,6 +17,47 @@
 /**
  * 
  */
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY();
+
+	FEffectProperties() {}
+	
+	UPROPERTY()
+	FGameplayEffectContextHandle EffectContextHandle;
+
+	//来源
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> SourceASC = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AActor> SourceAvatarActor = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AController> SourceController = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<ACharacter> SourceCharacter = nullptr;
+
+	//目标
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> TargetASC = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AActor> TargetAvatarActor = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AController> TargetController = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<ACharacter> TargetCharacter = nullptr;
+
+
+};
+
+
+
 UCLASS()
 class AURA_API UAuraAttributeSet : public UAttributeSet
 {
@@ -39,7 +80,6 @@ public:
 	//OutLifetimeProps 输出生命周期属性,GetLifetimeReplicatedProps 获取生命周期复制属性 Props道具
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	//-----------------------------------------------------------------------------------------------------
-
 	
 	//设置最多健康属性
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_MaxHealth, Category = "vital Attributes")
@@ -67,4 +107,14 @@ public:
 	//设置最大魔力的更新通知
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+
+	//实现数据限制的方法函数（第一种）
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	//后置游戏效果执行功能
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
+private:
+	
+	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 };

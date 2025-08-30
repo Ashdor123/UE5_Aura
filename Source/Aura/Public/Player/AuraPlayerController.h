@@ -38,6 +38,6 @@ private:
 	void CursorTrace();
 	
 	//定义2个Enemy接口指针，一个指向上一帧，一个指向现在的帧
-	IEnemyInterface* LastActor;
-	IEnemyInterface* ThisActor;
+	TObjectPtr<IEnemyInterface> LastActor;
+	TObjectPtr<IEnemyInterface> ThisActor;
 };

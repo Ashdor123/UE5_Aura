@@ -28,7 +28,7 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 {
 	//init overlay会负责创建控件控制器、控件，设置控件的控制器，并把控件添加到界面上
 	checkf(OverlayWidgetClass,TEXT("没有初始化OverlayWidgetClass，请在AuraHUD蓝图里设置"));
-	checkf(OverlayWidgetControllerClass,TEXT("没有初始化OverlayWidgetControllerClass，请在AuraHUD蓝图里设置"))
+	checkf(OverlayWidgetControllerClass,TEXT("没有初始化OverlayWidgetControllerClass，请在AuraHUD蓝图里设置"));
 	
 	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(),OverlayWidgetClass);
 	OverlayWidget = Cast<UAuraUserWidget>(Widget);

@@ -26,21 +26,47 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	const UAuraAttributeSet* AuraAttributes = Cast<UAuraAttributeSet>(AttributeSet);
 	if (!AuraAttributes || !AbilitySystemComponent) return;
 	//传入想绑定回调的那个属性,具体指定的属性和具体指定的回调函数
+	//函数签名要符合要求，才能绑定委托
+	//该委托会在属性变化的时候触发广播
 	//生命值属性
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-	AuraAttributes->GetHealthAttribute()).AddUObject(this,&UOverlayWidgetController::HealthChanged);
+	AuraAttributes->GetHealthAttribute()).AddLambda(
+	[this](const FOnAttributeChangeData& Data)
+	{
+		//广播生命值的新值
+		OnHealthChanged.Broadcast(Data.NewValue);
+	}
+	);
 	
 	//最大生命值属性
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-	AuraAttributes->GetMaxHealthAttribute()).AddUObject(this,&UOverlayWidgetController::MaxHealthChanged);
+	AuraAttributes->GetMaxHealthAttribute()).AddLambda(
+	[this](const FOnAttributeChangeData& Data)
+	{
+		//广播最大生命值的新值
+		OnMaxHealthChanged.Broadcast(Data.NewValue);
+	}
+	);
 
 	//魔力属性
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-	AuraAttributes->GetManaAttribute()).AddUObject(this,&UOverlayWidgetController::ManaChanged);
+	AuraAttributes->GetManaAttribute()).AddLambda(
+	[this](const FOnAttributeChangeData& Data)
+	{
+		//广播魔法值
+		OnManaChanged.Broadcast(Data.NewValue);
+	}
+	);
 
 	//最大魔力属性
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-	AuraAttributes->GetMaxManaAttribute()).AddUObject(this,&UOverlayWidgetController::MaxManaChanged);
+	AuraAttributes->GetMaxManaAttribute()).AddLambda(
+	[this](const FOnAttributeChangeData& Data)
+	{
+		//广播最大魔法值
+		OnMaxManaChanged.Broadcast(Data.NewValue);
+	}
+	);
 
 	//添加lambda让我们可以直接在括号里定义响应委托广播时调用的任意功能,方括号的作用是捕获变量,如果想访问某个成员变量，包含该变量的那个类必须被lambda捕获(一旦我把this放进方括号里，就相当于捕获了当前对象)
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
@@ -59,11 +85,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 				const FUIWidgetRow* Row = GetDataTableRawByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
 				MessageWidgetRowDelegate.Broadcast(*Row);
 			}
-		
-
 			
-			
-
 			/*
 		//广播标签到Widget Controller
 		//当任何效果被应用时我们可以拿到所有和该效果关联的资源标签,这些标签是在游戏效果蓝图里加的，我们可以随心所欲地用它们
@@ -77,24 +99,3 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	);
 }
 
-void UOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data) const
-{
-	//广播生命值的新值
-	OnHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data) const
-{
-	//广播最大生命值的新值
-	OnMaxHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::ManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnManaChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxManaChanged.Broadcast(Data.NewValue);
-}

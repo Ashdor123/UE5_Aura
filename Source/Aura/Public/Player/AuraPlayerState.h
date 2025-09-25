@@ -24,11 +24,22 @@ public:
 	//返回属性集的指针
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	//能力系统组件
 	//Ps:玩家是在角色状态里创建的，敌人是在敌人类里创建的
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	//AttributeSet 属性集 Attribute属性
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+private:
+	//等级
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level)
+	int32 Level = 1;
+	//等级的复制通知函数
+	UFUNCTION()
+	void OnRep_Level(int32 OldLevel);
+
+public:
+	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
 };

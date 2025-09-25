@@ -33,8 +33,10 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	//MakeEffectContext()就是用来创建包含内部游戏效果上下文的包装器,我们可以在那个上下文里设置内容
 	//游戏效果上下文可以存储与游戏效果相关的各种信息
 	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
-	//添加源对象，这样以后需要知道导致该效果的对象时，可以节省时间
+	
+	//1.添加源对象
 	EffectContextHandle.AddSourceObject(this);
+	
 	//设置规格权柄
 	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContextHandle);
 	//Prediction预测指的是延迟补偿中的预测机制

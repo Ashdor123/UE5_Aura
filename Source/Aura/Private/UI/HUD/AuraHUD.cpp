@@ -4,11 +4,12 @@
 #include "UI/HUD/AuraHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/Widget/AuraUserWidget.h"
+#include "UI/WidgetController/MenuWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 
 UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
-	//1.判断OverlayWidgetController是否为空指针，为空就创建一个，不为空就返回OverlayWidgetController
+	//1.判断OverlayWidgetController是否为空指针，为空就创建一个实例，不为空就返回OverlayWidgetController
 	if (OverlayWidgetController == nullptr)
 	{
 		//为OverlayWidgetController赋值（创建） 
@@ -18,10 +19,20 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 		//绑定回调函数
 		OverlayWidgetController->BindCallbacksToDependencies();
 		//最后设置完成后返回
-		return OverlayWidgetController;
 	}
 	
 	return OverlayWidgetController;
+}
+
+UMenuWidgetController* AAuraHUD::GetMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if (MenuWidgetController == nullptr)
+	{
+		MenuWidgetController = NewObject<UMenuWidgetController>(this,MenuWidgetControllerClass);
+		MenuWidgetController->SetWidgetControllerParams(WCParams);
+		MenuWidgetController->BindCallbacksToDependencies();
+	}
+	return MenuWidgetController;
 }
 
 void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
@@ -47,5 +58,6 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 		Widget->AddToViewport();
 	}
 }
+
 
 

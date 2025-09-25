@@ -45,6 +45,7 @@ public:
 
 	//任何继承了这个函数的小部件控制器都能广播自己独有的初始值
 	//BroadcastInitialValues 广播初始值
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
 	//Dependencies依赖关系
 	//用处：属性回调绑定到所有这些依赖项上

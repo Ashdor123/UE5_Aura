@@ -57,7 +57,7 @@ protected:
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
 	void InitializeDefaultAttributes() const;
 
-	//添加技能的函数
+	////只在服务端添加技能的函数
 	void AddCharacterAbilities();
 private:
 	

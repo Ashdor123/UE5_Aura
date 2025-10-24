@@ -47,6 +47,15 @@ public:
 	
 	FGameplayTag Attributes_Secondary_MaxMana;
 	/** Secondary Attributes End*/
+
+	/* 输入标签 */
+
+	FGameplayTag InputTag_LMB;
+	FGameplayTag InputTag_RMB;
+	FGameplayTag InputTag_1;
+	FGameplayTag InputTag_2;
+	FGameplayTag InputTag_3;
+	FGameplayTag InputTag_4;
 protected:
 	
 
